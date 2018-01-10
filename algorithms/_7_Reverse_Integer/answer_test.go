@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_reverse(t *testing.T) {
+func TestReverse(t *testing.T) {
 	if ret := reverse(-12); ret != -21 {
 		t.Error("not -21 with -12.")
 	}

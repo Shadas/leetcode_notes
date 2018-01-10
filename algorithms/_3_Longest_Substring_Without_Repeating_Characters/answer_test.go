@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_lengthOfLongestSubstring(t *testing.T) {
+func TestLengthOfLongestSubstring(t *testing.T) {
 
 	input1 := "abcabcab"
 

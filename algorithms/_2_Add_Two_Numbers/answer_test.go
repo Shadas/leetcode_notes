@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_addTwoNumbers(t *testing.T) {
+func TestAddTwoNumbers(t *testing.T) {
 	l1 := &ListNode{
 		Val: 2,
 		Next: &ListNode{

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_twoSum(t *testing.T) {
+func TestTwoSum(t *testing.T) {
 	arr := []int{3, 2, 4}
 	target := 6
 	ret := twoSum(arr, target)

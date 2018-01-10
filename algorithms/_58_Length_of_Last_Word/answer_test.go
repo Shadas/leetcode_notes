@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_lengthOfLastWord(t *testing.T) {
+func TestLengthOfLastWord(t *testing.T) {
 	if ret := lengthOfLastWord("Hello world"); ret != 5 {
 		t.Error("not 5")
 	}

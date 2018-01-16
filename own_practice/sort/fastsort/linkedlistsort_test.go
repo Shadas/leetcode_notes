@@ -1,9 +1,17 @@
 package fastsort
 
 import (
-	"fmt"
 	"testing"
 )
+
+func TestLinkedListFastSort1(t *testing.T) {
+	l1 := makeLinkedList([]int{3, 1, 2})
+	ret := LinkedListFastSort1(l1)
+	retl1 := makeLinkedList([]int{1, 2, 3})
+	if !isEqualTwoLinkedList(l1, retl1) {
+		t.Error("error test1 with", linkedList2slice(ret))
+	}
+}
 
 func makeLinkedList(vals []int) *ListNode {
 	var l *ListNode

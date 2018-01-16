@@ -1,18 +1,17 @@
 package fastsort
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
+import (
+	. "leetcode_notes/utils/linkedlist"
+)
 
 //
-func LinkedListFastSort1(l *ListNode) *ListNode {
+func LinkedListFastSort1(l *IntListNode) *IntListNode {
 	head := l
 	linkedListFastSort1(head, nil)
 	return head
 }
 
-func linkedListFastSort1(head, end *ListNode) {
+func linkedListFastSort1(head, end *IntListNode) {
 	if head == nil || head == end {
 		return
 	}

@@ -9,7 +9,7 @@ func lengthOfLongestSubstring(s string) int {
 	}
 	bstr := []byte(s)
 	max := 0
-	for i, _ := range bstr {
+	for i := range bstr {
 		ventor := []byte{bstr[i]}
 		if max >= len(bstr)-i {
 			break
@@ -42,4 +42,37 @@ func IndexByte(arr []byte, i byte) int {
 		}
 	}
 	return ret
+}
+
+// 去重使用map慢
+func lengthOfLongestSubstring2(s string) int {
+	if len(s) == 0 {
+		return 0
+	}
+	if len(s) == 1 {
+		return 1
+	}
+	bstr := []byte(s)
+	max := 0
+	for i := range bstr {
+		tmpmap := make(map[byte]bool)
+		tmpmap[bstr[i]] = true
+		if max >= len(bstr)-i {
+			break
+		}
+		for j := i + 1; j < len(bstr); j++ {
+			if _, ok := tmpmap[bstr[j]]; !ok {
+				tmpmap[bstr[j]] = true
+				if len(tmpmap) >= max {
+					max = len(tmpmap)
+				}
+			} else {
+				if len(tmpmap) >= max {
+					max = len(tmpmap)
+				}
+				break
+			}
+		}
+	}
+	return max
 }

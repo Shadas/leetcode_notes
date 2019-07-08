@@ -10,9 +10,7 @@ func missingNumberWithAdd(nums []int) int {
 		rightSum int
 		realSum  int
 	)
-	for i := 1; i <= len(nums); i++ {
-		rightSum += i
-	}
+	rightSum = len(nums) * (len(nums) + 1) / 2
 	for _, n := range nums {
 		realSum += n
 	}

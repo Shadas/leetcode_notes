@@ -1,6 +1,47 @@
 package _460_LFU_Cache
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+// 测试用，处理arg参数
+func transArg(str string) (ret [][]int) {
+	str = strings.TrimSpace(strings.TrimRight(strings.TrimLeft(str, "["), "]"))
+	args := strings.Split(str, "],[")
+	for _, arg := range args {
+		as := strings.Split(strings.TrimSpace(arg), ",")
+		tmpAs := []int{}
+		for _, a := range as {
+			i, _ := strconv.Atoi(a)
+			tmpAs = append(tmpAs, i)
+		}
+		ret = append(ret, tmpAs)
+	}
+	return
+}
+
+// 测试用，处理调用
+func transCall(fn []string, arg [][]int) {
+	if len(fn) != len(arg) {
+		fmt.Println("err input")
+		return
+	}
+	var obj LFUCache
+	for i := 0; i < len(fn); i++ {
+		switch fn[i] {
+		case "LFUCache":
+			obj = Constructor(arg[i][0])
+		case "put":
+			obj.Put(arg[i][0], arg[i][1])
+		case "get":
+			obj.Get(arg[i][0])
+		}
+
+	}
+
+}
 
 type Pair struct {
 	Value int
@@ -78,15 +119,31 @@ func (this *LFUCache) Put(key int, value int) {
 	// 如果之前有这一项，则更新值，同时把其在频率行中提前
 	if p, ok := this.Mp[key]; ok {
 		p.Value = value
+		of := p.Freq
+		nf := of + 1
+		p.Freq = nf
 		this.Mp[key] = p
-		fl := this.Mf[p.Freq]
-		nl := []int{key}
-		for _, x := range fl {
-			if x != key {
-				nl = append(nl, x)
+
+		ofl := this.Mf[of]
+		ofln := []int{}
+		for _, k := range ofl {
+			if k != key {
+				ofln = append(ofln, k)
 			}
 		}
-		this.Mf[p.Freq] = nl
+		this.Mf[of] = ofln
+
+		var nfl []int
+		if nfl, ok = this.Mf[nf]; !ok {
+			nfl = []int{key}
+		} else {
+			nfl = append([]int{key}, nfl...)
+		}
+		this.Mf[nf] = nfl
+
+		if this.MinFreq == of && len(this.Mf[of]) == 0 {
+			this.MinFreq = nf
+		}
 		return
 	}
 	// 如果没有,则需要增加，增加要看容量是否已经满了

@@ -86,13 +86,23 @@ func (this *LFUCache) Get(key int) int {
 		ofl     = this.Mf[oldFreq] // 旧频率列表
 		ofln    = []int{}
 		nfl     []int
+		delIdx  int
 	)
 	ret = p.Value // 获得返回值
+	if len(ofl) == 0 {
+		return -1
+	}
 	// 更新旧的频率列表
-	for _, k := range ofl {
-		if k != key {
-			ofln = append(ofln, k)
+	for i, k := range ofl {
+		if k == key {
+			delIdx = i
+			break
 		}
+	}
+	if delIdx == len(ofl)-1 {
+		ofln = append(ofl[:delIdx])
+	} else {
+		ofln = append(ofl[:delIdx], ofl[delIdx+1:]...)
 	}
 	this.Mf[oldFreq] = ofln
 	// 更新mp
@@ -102,7 +112,7 @@ func (this *LFUCache) Get(key int) int {
 	if nfl, ok = this.Mf[newFreq]; !ok {
 		nfl = []int{}
 	}
-	nfl = append([]int{key}, nfl...)
+	nfl = append(nfl, key)
 	this.Mf[newFreq] = nfl
 	// 更新最低频率标记
 	if this.MinFreq == oldFreq { // 如果删除的项的频率对应最低频率
@@ -118,27 +128,38 @@ func (this *LFUCache) Put(key int, value int) {
 	defer fmt.Printf("PUT %d-%d: %+v\n\n", key, value, this)
 	// 如果之前有这一项，则更新值，同时把其在频率行中提前
 	if p, ok := this.Mp[key]; ok {
+		var (
+			delIdx int
+			ofln   = []int{}
+			of     = p.Freq
+			nf     = of + 1
+			ofl    = this.Mf[of]
+		)
+		if len(ofl) == 0 {
+			return
+		}
 		p.Value = value
-		of := p.Freq
-		nf := of + 1
 		p.Freq = nf
 		this.Mp[key] = p
-
-		ofl := this.Mf[of]
-		ofln := []int{}
-		for _, k := range ofl {
-			if k != key {
-				ofln = append(ofln, k)
+		// 更新旧的频率列表
+		for i, k := range ofl {
+			if k == key {
+				delIdx = i
+				break
 			}
+		}
+		if delIdx == len(ofl)-1 {
+			ofln = append(ofl[:delIdx])
+		} else {
+			ofln = append(ofl[:delIdx], ofl[delIdx+1:]...)
 		}
 		this.Mf[of] = ofln
 
 		var nfl []int
 		if nfl, ok = this.Mf[nf]; !ok {
-			nfl = []int{key}
-		} else {
-			nfl = append([]int{key}, nfl...)
+			nfl = []int{}
 		}
+		nfl = append(nfl, key)
 		this.Mf[nf] = nfl
 
 		if this.MinFreq == of && len(this.Mf[of]) == 0 {
@@ -152,12 +173,15 @@ func (this *LFUCache) Put(key int, value int) {
 			Value: value,
 			Freq:  1,
 		}
-		if f, ok := this.Mf[1]; ok {
-			f = append([]int{key}, f...)
-			this.Mf[1] = f
-		} else {
-			this.Mf[1] = []int{key}
+		var (
+			f  []int
+			ok bool
+		)
+		if f, ok = this.Mf[1]; !ok {
+			f = []int{}
 		}
+		f = append(f, key)
+		this.Mf[1] = f
 		this.MinFreq = 1
 		return
 	}
@@ -168,11 +192,11 @@ func (this *LFUCache) Put(key int, value int) {
 	if len(fl) == 0 {
 		return
 	}
-	delKey := fl[len(fl)-1]
+	delKey := fl[0]
 	// 删除记录
 	delete(this.Mp, delKey)
 	// 删除并更新频率记录
-	fl = fl[0 : len(fl)-1]
+	fl = fl[1:]
 	this.Mf[this.MinFreq] = fl
 	// 再添加项目
 	this.Mp[key] = Pair{
@@ -180,7 +204,7 @@ func (this *LFUCache) Put(key int, value int) {
 		Freq:  1,
 	}
 	if f, ok := this.Mf[1]; ok {
-		f = append([]int{key}, f...)
+		f = append(f, key)
 		this.Mf[1] = f
 	} else {
 		this.Mf[1] = []int{key}

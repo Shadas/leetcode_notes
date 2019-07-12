@@ -1,5 +1,49 @@
 package _460_LFU_Cache
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+// 测试时可调用 transCall([]string{"LFUCache", "put", "get"...}, transArg("[[2],[1,1],[1]]...")) 类似的方式进行测试，方便调试
+// 测试用，处理arg参数
+func transArg(str string) (ret [][]int) {
+	str = strings.TrimSpace(strings.TrimRight(strings.TrimLeft(str, "["), "]"))
+	args := strings.Split(str, "],[")
+	for _, arg := range args {
+		as := strings.Split(strings.TrimSpace(arg), ",")
+		tmpAs := []int{}
+		for _, a := range as {
+			i, _ := strconv.Atoi(a)
+			tmpAs = append(tmpAs, i)
+		}
+		ret = append(ret, tmpAs)
+	}
+	return
+}
+
+// 测试用，处理调用
+func transCall(fn []string, arg [][]int) {
+	if len(fn) != len(arg) {
+		fmt.Println("err input")
+		return
+	}
+	var obj LFUCache
+	for i := 0; i < len(fn); i++ {
+		switch fn[i] {
+		case "LFUCache":
+			obj = Constructor(arg[i][0])
+		case "put":
+			obj.Put(arg[i][0], arg[i][1])
+		case "get":
+			obj.Get(arg[i][0])
+		}
+
+	}
+
+}
+
 type Pair struct {
 	Value int
 	Freq  int

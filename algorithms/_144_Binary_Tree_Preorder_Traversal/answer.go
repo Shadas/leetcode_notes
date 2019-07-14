@@ -9,7 +9,30 @@ package _144_Binary_Tree_Preorder_Traversal
  * }
  */
 func preorderTraversal(root *TreeNode) []int {
-	return preorderTraversalRecursion(root)
+	// return preorderTraversalRecursion(root)
+	return preorderTraversalUnrecursion(root)
+}
+
+func preorderTraversalUnrecursion(root *TreeNode) []int {
+	var (
+		ret = []int{}
+		l   = []*TreeNode{root}
+	)
+	if root == nil {
+		return ret
+	}
+	for len(l) > 0 {
+		node := l[len(l)-1]
+		ret = append(ret, node.Val)
+		l = l[:len(l)-1]
+		if node.Right != nil {
+			l = append(l, node.Right)
+		}
+		if node.Left != nil {
+			l = append(l, node.Left)
+		}
+	}
+	return ret
 }
 
 func preorderTraversalRecursion(n *TreeNode) []int {

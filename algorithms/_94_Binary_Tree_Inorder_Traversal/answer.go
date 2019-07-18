@@ -10,7 +10,29 @@ package _94_Binary_Tree_Inorder_Traversal
  */
 func inorderTraversal(root *TreeNode) []int {
 	// return inorderTranversalRecursion(root)
-	return inorderTranversalUnrecursion(root)
+	// return inorderTranversalUnrecursion(root)
+	return inorderTranversalUnrecursionWithStack(root)
+}
+
+func inorderTranversalUnrecursionWithStack(n *TreeNode) []int {
+	var (
+		s    = []*TreeNode{}
+		ret  = []int{}
+		node = n
+	)
+	for node != nil || len(s) > 0 {
+		for node != nil {
+			s = append(s, node)
+			node = node.Left
+		}
+		if len(s) > 0 {
+			node = s[len(s)-1]
+			s = s[:len(s)-1]
+			ret = append(ret, node.Val)
+			node = node.Right
+		}
+	}
+	return ret
 }
 
 func inorderTranversalUnrecursion(n *TreeNode) []int {

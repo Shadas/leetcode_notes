@@ -1,8 +1,19 @@
 package linkedlist
 
+import "fmt"
+
 type IntListNode struct {
 	Val  int
 	Next *IntListNode
+}
+
+func (l *IntListNode) String() string {
+	var s string
+	for l != nil {
+		s += fmt.Sprintf("%d", l.Val)
+		l = l.Next
+	}
+	return s
 }
 
 // IsTwoIntLinkedListEqual compares two int linked list, return if they are the same or not.

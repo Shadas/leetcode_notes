@@ -2,6 +2,7 @@ package _22_Generate_Parentheses
 
 func generateParenthesis(n int) []string {
 	return generateParenthesisWithMap(n)
+	//return generateParenthesisWithBackTrace(n)
 }
 
 func generateParenthesisWithMap(n int) []string {
@@ -40,4 +41,24 @@ func genNewStrs(prem map[string]struct{}) (ret map[string]struct{}) {
 		}
 	}
 	return ret
+}
+
+func generateParenthesisWithBackTrace(n int) []string {
+	res := []string{}
+	backTrace(n, 0, 0, &res, "")
+	return res
+}
+
+func backTrace(n, l, r int, res *[]string, str string) {
+	if len(str) == 2*n {
+		*res = append(*res, str)
+		return
+	}
+	if l < n {
+		backTrace(n, l+1, r, res, str+"(")
+	}
+	if r < l {
+		backTrace(n, l, r+1, res, str+")")
+	}
+	return
 }

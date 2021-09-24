@@ -2,6 +2,7 @@ package _23_Merge_K_Sorted_Lists
 
 import (
 	"container/heap"
+	"fmt"
 )
 
 type ListNode struct {
@@ -10,7 +11,8 @@ type ListNode struct {
 }
 
 func mergeKLists(lists []*ListNode) *ListNode {
-	return mergeKListsWithPQ(lists)
+	//return mergeKListsWithPQ(lists)
+	return mergeKListsReduce(lists)
 }
 
 // 构造pq
@@ -51,6 +53,13 @@ func (pq *PriorityQueue) Pop() interface{} {
 	return item.Node
 }
 
+func (pq PriorityQueue) Print() {
+	for _, x := range pq {
+		fmt.Printf("%d,", x.Node.Val)
+	}
+	fmt.Printf("\n")
+}
+
 // 优先队列解法
 func mergeKListsWithPQ(lists []*ListNode) *ListNode {
 	pq := PriorityQueue{}
@@ -58,6 +67,7 @@ func mergeKListsWithPQ(lists []*ListNode) *ListNode {
 	for _, list := range lists {
 		for list != nil {
 			heap.Push(&pq, list)
+			//pq.Print()
 			list = list.Next
 		}
 	}
@@ -66,38 +76,54 @@ func mergeKListsWithPQ(lists []*ListNode) *ListNode {
 	tmp := head
 	for pq.Len() > 0 {
 		item := heap.Pop(&pq).(*ListNode)
+		//pq.Print()
 		tmp.Next = &ListNode{Val: item.Val}
 		tmp = tmp.Next
 	}
 	return head.Next
 }
 
-//func mergeTwoLists(l1, l2 *ListNode) *ListNode {
-//	if l1 == nil {
-//		return l2
-//	}
-//	if l2 == nil {
-//		return l1
-//	}
-//	ret := &ListNode{}
-//	tmp := ret
-//	for l1 != nil && l2 != nil {
-//		node := &ListNode{}
-//		if l1.Val >= l2.Val {
-//			node.Val = l2.Val
-//			l2 = l2.Next
-//		} else {
-//			node.Val = l1.Val
-//			l1 = l1.Next
-//		}
-//		tmp.Next = node
-//		tmp = tmp.Next
-//	}
-//	if l1 != nil {
-//		tmp.Next = l1
-//	}
-//	if l2 != nil {
-//		tmp.Next = l2
-//	}
-//	return ret.Next
-//}
+// 归并方式依次合并
+func mergeKListsReduce(lists []*ListNode) *ListNode {
+	if len(lists) == 0 {
+		return nil
+	}
+	n := len(lists)
+	for n > 1 {
+		k := (n + 1) / 2
+		for i := 0; i < n/2; i++ {
+			lists[i] = mergeTwoLists(lists[i], lists[i+k])
+		}
+		n = k
+	}
+	return lists[0]
+}
+
+// 合并两个有序链表的原子方法
+func mergeTwoLists(l1, l2 *ListNode) *ListNode {
+	if l1 == nil {
+		return l2
+	}
+	if l2 == nil {
+		return l1
+	}
+	ret := &ListNode{}
+	tmp := ret
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
+			tmp.Next = l1
+			l1 = l1.Next
+		} else {
+			tmp.Next = l2
+			l2 = l2.Next
+		}
+		tmp = tmp.Next
+	}
+	if l1 != nil {
+		tmp.Next = l1
+	}
+	if l2 != nil {
+		tmp.Next = l2
+	}
+	return ret.Next
+}

@@ -46,6 +46,5 @@ func TestMergeKLists(t *testing.T) {
 	l5 := GenerateLinkedList([]int{})
 	lists2 := []*ListNode{l4, l5}
 	ret = mergeKLists(lists2)
-	fmt.Println("xx")
 	PrintListNode(ret)
 }

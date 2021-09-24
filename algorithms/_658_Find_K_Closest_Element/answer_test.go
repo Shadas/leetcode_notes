@@ -23,4 +23,10 @@ func TestFindClosestElements(t *testing.T) {
 	if !array.IsIntArrayEqual(ret, []int{10}) {
 		t.Errorf("wrong ret is %v", ret)
 	}
+	arr = []int{1, 1, 2, 2, 2, 2, 2, 3, 3}
+	k, x = 3, 3
+	ret = findClosestElements(arr, k, x)
+	if !array.IsIntArrayEqual(ret, []int{2, 3, 3}) {
+		t.Errorf("wrong ret is %v", ret)
+	}
 }

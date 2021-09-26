@@ -1,6 +1,20 @@
 package _215_Kth_Largest_Element_in_an_Array
 
+import "sort"
+
 func findKthLargest(nums []int, k int) int {
+	//return findKthLargestWithKLengthArray(nums, k)
+	return findKthLargestAfterSortingAllElements(nums, k)
+}
+
+// 全排序然后取第K位
+func findKthLargestAfterSortingAllElements(nums []int, k int) int {
+	sort.Ints(nums) // 升序
+	return nums[len(nums)-k]
+}
+
+// 其实没有用到堆，只是用了一个数组，每次添加都遍历一遍找最小，其实效率并不好
+func findKthLargestWithKLengthArray(nums []int, k int) int {
 	var (
 		heap        []int
 		min, minidx int

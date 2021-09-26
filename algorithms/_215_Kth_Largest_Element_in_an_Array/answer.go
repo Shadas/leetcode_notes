@@ -1,10 +1,45 @@
 package _215_Kth_Largest_Element_in_an_Array
 
-import "sort"
+import (
+	"container/heap"
+	"sort"
+)
 
 func findKthLargest(nums []int, k int) int {
 	//return findKthLargestWithKLengthArray(nums, k)
-	return findKthLargestAfterSortingAllElements(nums, k)
+	//return findKthLargestAfterSortingAllElements(nums, k)
+	return findKthLargestWithHeap(nums, k)
+}
+
+// 优先队列/堆
+func findKthLargestWithHeap(nums []int, k int) int {
+	h := IntHeap(nums)
+	heap.Init(&h)
+	var ret int
+	for i := 0; i < k; i++ {
+		ret = heap.Pop(&h).(int)
+	}
+	return ret
+}
+
+type IntHeap []int
+
+func (h IntHeap) Len() int { return len(h) }
+
+func (h IntHeap) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+
+func (h IntHeap) Less(i, j int) bool { return h[i] > h[j] }
+
+func (h *IntHeap) Push(x interface{}) {
+	*h = append(*h, x.(int))
+}
+
+func (h *IntHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
 }
 
 // 全排序然后取第K位

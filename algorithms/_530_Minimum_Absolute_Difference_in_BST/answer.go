@@ -11,7 +11,8 @@ type TreeNode struct {
 }
 
 func getMinimumDifference(root *TreeNode) int {
-	return getMinimumDifferenceInOrderR(root)
+	//return getMinimumDifferenceInOrderR(root)
+	return getMinimumDifferenceInOrderNR(root)
 }
 
 func absInt(a, b int) int {
@@ -58,5 +59,25 @@ func dfs(root *TreeNode, pre *TreeNode, min *int) (newPre *TreeNode) {
 
 // 解法二：中序遍历，非递归实现
 func getMinimumDifferenceInOrderNR(root *TreeNode) int {
-	return 0
+	var (
+		stack []*TreeNode
+		node  = root
+		pre   *TreeNode
+		min   int = math.MaxInt32
+	)
+	for node != nil || len(stack) > 0 {
+		if node != nil {
+			stack = append(stack, node)
+			node = node.Left
+		} else {
+			node = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			if pre != nil {
+				min = minInt(min, absInt(node.Val, pre.Val))
+			}
+			pre = node
+			node = node.Right
+		}
+	}
+	return min
 }

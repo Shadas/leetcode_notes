@@ -3,6 +3,7 @@ package _297_Serialize_and_Deserialize_Binary_Tree
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type TreeNode struct {
@@ -20,16 +21,18 @@ func Constructor() Codec {
 
 // Serializes a tree to a single string.
 func (this *Codec) serialize(root *TreeNode) string {
-	return postOrderSerialize(root)
 	//return preOrderSerialize(root)
+	//return postOrderSerialize(root)
+	return BFSSerialize(root)
 }
 
 // Deserializes your encoded data to tree.
 func (this *Codec) deserialize(data string) *TreeNode {
 	//startCur := 0
 	//return preOrderDeserialize(data, &startCur)
-	startCur := len(data) - 1
-	return postOrderDeserialize(data, &startCur)
+	//startCur := len(data) - 1
+	//return postOrderDeserialize(data, &startCur)
+	return BFSDeserialize(data)
 }
 
 // 后续遍历序列化
@@ -94,29 +97,55 @@ func preOrderDeserialize(data string, cur *int) *TreeNode {
 	return node
 }
 
-//// 层序遍历序列化
-//func bfsSerialize(root *TreeNode) string {
-//	var (
-//		str   string
-//		level = []*TreeNode{root}
-//	)
-//	for len(level) != 0 {
-//		node := level[0]
-//		newStr := ""
-//		if node == nil {
-//			newStr = fmt.Sprintf("%d,", node.Val)
-//		} else {
-//			newStr = fmt.Sprintf("#,")
-//		}
-//		str += newStr
-//	}
-//	return str
-//}
-//
-//// 层序遍历反序列化
-//func bfsDeserialize(root *TreeNode) string {
-//
-//}
+// 层序遍历序列化
+func BFSSerialize(root *TreeNode) string {
+	var (
+		str string
+		q   = []*TreeNode{root}
+	)
+	for len(q) != 0 {
+		node := q[0]
+		q = q[1:]
+		newStr := ""
+		if node != nil {
+			newStr = fmt.Sprintf("%d,", node.Val)
+			q = append(q, node.Left, node.Right)
+		} else {
+			newStr = fmt.Sprintf(",")
+		}
+		str += newStr
+	}
+	return str
+}
+
+// 层序遍历反序列化
+func BFSDeserialize(data string) *TreeNode {
+	if data == "," {
+		return nil
+	}
+	eles := strings.Split(data, ",")
+	num, _ := strconv.ParseInt(eles[0], 10, 64)
+	eles = eles[1:]
+	root := &TreeNode{Val: int(num)}
+	q := []*TreeNode{root}
+	for len(q) > 0 && len(eles) >= 2 {
+		preNode := q[0]
+		q = q[1:]
+		lv, rv := eles[0], eles[1]
+		eles = eles[2:]
+		if lv != "" {
+			num, _ := strconv.ParseInt(lv, 10, 64)
+			preNode.Left = &TreeNode{Val: int(num)}
+			q = append(q, preNode.Left)
+		}
+		if rv != "" {
+			num, _ := strconv.ParseInt(rv, 10, 64)
+			preNode.Right = &TreeNode{Val: int(num)}
+			q = append(q, preNode.Right)
+		}
+	}
+	return root
+}
 
 /**
  * Your Codec object will be instantiated and called as such:

@@ -44,3 +44,20 @@ func TestPostOrderSerialize(t *testing.T) {
 	root = postOrderDeserialize(str, &start)
 	fmt.Println(root)
 }
+
+func TestBFSSerialize(t *testing.T) {
+	var (
+		root *TreeNode
+		str  string
+	)
+	root = &TreeNode{Val: 1, Left: nil, Right: &TreeNode{Val: 2}}
+	str = BFSSerialize(root)
+	fmt.Println(str)
+	root = BFSDeserialize(str)
+	fmt.Println(root, root.Left, root.Right)
+	root = nil
+	str = BFSSerialize(root)
+	fmt.Println(str)
+	root = BFSDeserialize(str)
+	fmt.Println(root)
+}

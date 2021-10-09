@@ -2,15 +2,19 @@ package _139_Word_Break
 
 func wordBreak(s string, wordDict []string) bool {
 	//return wordBreakBackTrack(s, wordDict)
-	return wordBreakDP(s, wordDict)
+	dict := make(map[string]struct{})
+	for _, word := range wordDict {
+		dict[word] = struct{}{}
+	}
+	return wordBreakDP(s, dict)
 }
 
 // 回溯法，会超时
-func wordBreakBackTrack(s string, wordDict []string) bool {
+func wordBreakBackTrack(s string, wordDict map[string]struct{}) bool {
 	return backFunc(s, 0, wordDict)
 }
 
-func backFunc(s string, idx int, wordDict []string) bool {
+func backFunc(s string, idx int, wordDict map[string]struct{}) bool {
 	if idx >= len(s) {
 		return true
 	}
@@ -27,7 +31,7 @@ func backFunc(s string, idx int, wordDict []string) bool {
 }
 
 // DP法  dp[j] = dp[i] && (s[i:j+1] in wordDict)
-func wordBreakDP(s string, wordDict []string) bool {
+func wordBreakDP(s string, wordDict map[string]struct{}) bool {
 	dp := make([]bool, len(s)+1)
 	dp[0] = true
 	for j := 1; j <= len(s); j++ {
@@ -41,11 +45,7 @@ func wordBreakDP(s string, wordDict []string) bool {
 	return dp[len(s)]
 }
 
-func wordInDict(word string, dict []string) bool {
-	for _, w := range dict {
-		if word == w {
-			return true
-		}
-	}
-	return false
+func wordInDict(word string, dict map[string]struct{}) bool {
+	_, ok := dict[word]
+	return ok
 }

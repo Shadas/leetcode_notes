@@ -54,6 +54,7 @@ func lengthOfLISGreedy(nums []int) int {
 			lis[findPos(lis, val)] = val
 		}
 	}
+	//fmt.Println(lis) // 此处可以检验实际计算长度的子序列，不一定是合法的，但长度是正确的
 	return len(lis)
 }
 

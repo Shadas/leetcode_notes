@@ -1,13 +1,11 @@
 package _144_Binary_Tree_Preorder_Traversal
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
 func preorderTraversal(root *TreeNode) []int {
 	// return preorderTraversalRecursion(root)
 	return preorderTraversalUnrecursion(root)

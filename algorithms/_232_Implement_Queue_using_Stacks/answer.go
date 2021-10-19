@@ -1,8 +1,12 @@
 package _232_Implement_Queue_using_Stacks
 
+import "sync"
+
 type MyQueue struct {
 	in, out []int // 两个栈，分别处理进出
 	top     int
+
+	rwm sync.RWMutex
 }
 
 /** Initialize your data structure here. */
@@ -13,6 +17,8 @@ func Constructor() MyQueue {
 
 /** Push element x to the back of queue. */
 func (this *MyQueue) Push(x int) {
+	this.rwm.Lock()
+	defer this.rwm.Unlock()
 	if len(this.in) == 0 {
 		this.top = x
 	}
@@ -21,6 +27,8 @@ func (this *MyQueue) Push(x int) {
 
 /** Removes the element from in front of queue and returns that element. */
 func (this *MyQueue) Pop() int {
+	this.rwm.Lock()
+	defer this.rwm.Unlock()
 	if len(this.out) == 0 {
 		for len(this.in) > 0 {
 			// pop
@@ -37,6 +45,8 @@ func (this *MyQueue) Pop() int {
 
 /** Get the front element. */
 func (this *MyQueue) Peek() int {
+	this.rwm.RLock()
+	defer this.rwm.RUnlock()
 	if len(this.out) == 0 {
 		return this.top
 	}
@@ -45,6 +55,8 @@ func (this *MyQueue) Peek() int {
 
 /** Returns whether the queue is empty. */
 func (this *MyQueue) Empty() bool {
+	this.rwm.RLock()
+	defer this.rwm.RUnlock()
 	return len(this.in) == 0 && len(this.out) == 0
 }
 

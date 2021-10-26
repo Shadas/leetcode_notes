@@ -1,10 +1,21 @@
 package _136_Single_Number
 
 func singleNumber(nums []int) int {
-	return singleNumber2(nums)
+	//return singleNumberWithMap(nums)
+	return singleNumberWithXOR(nums)
 }
 
-func singleNumber1(nums []int) int {
+// 异或 计算处理
+func singleNumberWithXOR(nums []int) int {
+	ret := 0
+	for _, num := range nums {
+		ret ^= num
+	}
+	return ret
+}
+
+// 使用额外map处理
+func singleNumberWithMap(nums []int) int {
 	var m = make(map[int]int)
 	for _, n := range nums {
 		if _, ok := m[n]; ok {

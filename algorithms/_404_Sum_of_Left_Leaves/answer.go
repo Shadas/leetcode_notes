@@ -1,13 +1,11 @@
 package _404_Sum_of_Left_Leaves
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
 func sumOfLeftLeaves(root *TreeNode) int {
 	// return sumOfLeftLeavesBFS(root)
 	// return sumOfLeftLeavesDFSRecursion(root)
@@ -65,11 +63,7 @@ func sumOfLeftLeavesBFS(root *TreeNode) int {
 	}
 	for len(q) > 0 {
 		x := q[0]
-		if len(q) == 1 {
-			q = q[0:0]
-		} else {
-			q = q[1:]
-		}
+		q = q[1:]
 		if x.Left != nil {
 			q = append(q, x.Left)
 			if x.Left.Left == nil && x.Left.Right == nil {

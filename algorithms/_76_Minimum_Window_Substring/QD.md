@@ -38,4 +38,4 @@ Follow up: Could you find an algorithm that runs in O(m + n) time?
 
 leetcode 76
 
-滑动窗口
+滑动窗口，重点在于计算每个子窗口是否符合条件，如何避免重复计算和遍历导致的超时。

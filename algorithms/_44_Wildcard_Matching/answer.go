@@ -41,6 +41,38 @@ func isMatchScan(s string, p string) bool {
 	return j == lp // 如果能对齐，则匹配成功
 }
 
+// 状态转移方程
+// if p[j-1] = '*'; f(i,j) = f(i, j-1) or f(i-1, j)
+//// 为*的时候，就考虑从当前位置向后匹配0次还是1次
+////// 如果是0次，则，f(i-1, j)
+////// 如果是1次，则，f(i, j-1), 在这个情况下，后续如果再匹配，则在当前计算中，再向后找
+// if p[j-1] !-= '*'; f(i,j) = f(i-1, j-1) and (s[i-1] == p[j-1] or p[j-1] == '?')
+//// 不为*的时候，前面的匹配成功，且当前能够单个字符对应
 func isMatchDP(s, p string) bool {
-	return false
+	var dp [][]bool // [s][p]
+	// 初始化dp数组
+	dp = make([][]bool, len(s)+1)
+	for idx := 0; idx <= len(s); idx++ {
+		dp[idx] = make([]bool, len(p)+1)
+	}
+	dp[0][0] = true // 初始长度0，0的时候是匹配的
+	//
+	for i := 0; i <= len(s); i++ {
+		for j := 1; j <= len(p); j++ {
+			if p[j-1] == '*' {
+				if i > 0 {
+					dp[i][j] = dp[i][j-1] || dp[i-1][j]
+				} else {
+					dp[i][j] = dp[i][j-1]
+				}
+			} else {
+				if i > 0 {
+					dp[i][j] = dp[i-1][j-1] && (s[i-1] == p[j-1] || p[j-1] == '?')
+				} else {
+					dp[i][j] = false
+				}
+			}
+		}
+	}
+	return dp[len(s)][len(p)]
 }

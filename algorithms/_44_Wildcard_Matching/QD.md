@@ -59,3 +59,5 @@ leetcode 44 判断通配符是否匹配
 
 - dp
 - 直接一起从头遍历，带回头地计算
+
+refer https://blog.csdn.net/qq_17550379/article/details/84191382
